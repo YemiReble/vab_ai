@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+</head>
+<body class="flex flex-col min-h-screen bg-gray-200 font-sans antialiased">
+    <!-- Navigation Bar area -->
+    <nav class="bg-blue-600 p-4 text-white flex justify-between">
+        <div>
+            <h1 class="text-3xl font-bold">AI Blog Generator</h1>
+        </div>
+        <div>
+            <a class="text-white hover:underline" href="{% url 'signup' %}">Signup</a>
+        </div>
+    </nav>
+    <!-- Login Mode -->
+    <div class="flex items-center justify-center h-screen">
+        <div class="bg-white p-8 shadow rounded-lg max-w-md w-full">
+            <!-- Login Form -->
+            <form class="space-y-4" action="" method="POST">
+                <!-- Atteck prevension with CSRF -->
+                {% csrf_token %}
+                {% if error_message %}
+                <div align="center" style="color: red;">
+                    <h2>
+                        <!-- Error Massage Displayed. Varaiable to be implimented in views -->
+                        {{ error_message }}
+                    </h2>
+                </div>
+                {% endif %}
+
+                <h2 class="text-xl font-semibold">Login</h2>
+                <div>
+                    <label class="block mb-1 font-medium" for="username">Username</label>
+                    <input type="username" name="username" class="w-full p-2 border rounded" placeholder="Enter Your Username">
+                </div>
+                <div>
+                    <label class="block mb-1 font-medium" for="password">Password</label>
+                    <input type="password" name="password" class="w-full p-2 border rounded" placeholder="Enter Your Password">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-500">Login</button>
+            </form>
+        </div>
+    </div>
+    <footer class="text-center p-4 text-black mt-6">
+        ALX Final Project | Done By Sulaimon
+    </footer>
+    <!-- JavaScript Instructions Here -->
+    <script>
+
+    </script>
+</body>
+</html>

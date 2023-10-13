@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AI Blog Generator</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- Latest Tailwind CSS Library -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/tailwind.min.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./styles/style.css">
+    <style></style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-200 font-sans antialiased">
+    <!-- Navigation Bar area -->
+    <nav class="bg-blue-600 p-4 text-white flex justify-between">
+        <div>
+            <h1 class="text-3xl font-bold"> AI Blog Generator</h1>
+        </div>
+        <div>
+            <a class="text-white">Welcome {{user.username}} |</a>
+            <a class="text-white hover:underline" href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+    
+    <br>
+    <br>
+    <!-- Main Section -->
+    <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
+        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
+            <!-- Application Introduction Section -->
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold nb-4"> Welcome To Blog Gen</h2>
+                <p class="text-gray-700">This is the the instruction area, where you explain what this application does</p>
+            </div>
+        <br>
+        <!-- YouTube Link Section -->
+        <div>
+            <h2 class="text-xl nb-4 font-semibold">Enter Your YouTube Link</h2>
+            <div class="flex space-x-4">
+                <input id="youtubelink" type="url" placeholder="Paste Your YouTube Link..." class="flex-grow p-2 border border-blue-400 rounded-l-md">
+                <button id="generateBlogButton" class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-500 trasition-colors">Generate</button>
+            </div>
+        </div>
+        <!-- Section for loading trasition while user wait -->
+        <div style="display: none;" id="loading-circle" class="load">
+        </div>
+            <section class="mt-10 flex-grow">
+                <h2 class="text-xl nb-4 font-semibold">Generated Article</h2>
+                <div id="blogContent" class="mt-2 text-gray-700 space-y-4">
+                    This is an example of what will be printed when it runs
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer class="text-center p-4 text-black mt-6">
+        ALX Final Project | Done By Sulaimon
+    </footer>
+    <!-- JavaScript Instructions Here -->
+    <script>
+        document.getElementById('generateBlogButton').addEventListener('click', async () => {
+            
+
+            const youtubeLink = document.getElementById('youtubeLink').value;
+            const blogContent = document.getElementById('blogContent');
+            
+            if(youtubeLink) {
+                document.getElementById('loading-circle').style.display = 'block';
+                
+                blogContent.innerHTML = ''; // Clear previous content
+
+                const endpointUrl = /'blogcontent' //'/generate-blog';
+                
+                try {
+                    const response = await fetch(endpointUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ link: youtubeLink })
+                    });
+
+                    const data = await response.json();
+
+                    blogContent.innerHTML = data.content;
+
+                } catch (error) {
+                    console.error("Error occurred:", error);
+                    alert("Something went wrong. Please try again later.");
+                    
+                }
+                document.getElementById('loading-circle').style.display = 'none';
+            } else {
+                alert("Please enter a YouTube link.");
+            }
+        });
+    </script>
+</body>
+</html>
