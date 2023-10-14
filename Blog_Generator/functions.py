@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.http import JsonResponse
 from pytube import YouTube
+import assmeblyai as asbi
+import os
 
 
 def get_youtube_title(link: str):
@@ -17,21 +19,21 @@ def get_yt_audio(link: str):
     """ The function that gets and downloads the audio of the youtube
         link the user provided
     """
-    try:
-        video = YouTube(link)
-        audio = video.streams.filter(only_audio=True).first()
-        audio_data = audio.download(output_path=settings.MEDIA_ROOT)
-        return audio_data
-    except Exception:
-        return JsonResponse({'error': 'Something went wrong'})
+    video = YouTube(link)
+    audio = video.streams.filter(only_audio=True).first()
+    audio_data = audio.download(output_path=settings.MEDIA_ROOT)
+    base, extention = os.path.splitext(audio_data)
+    downl_file = base + '.mp3'
+    os.rename(audio_data, downl_file)
+    return downl_file
 
 
-def get_yt_transcription(audio: str):
+def get_yt_transcription(link: str):
     """ The function that gets the transcription of the youtube
         link the user provided
     """
-    audio = get_yt_audio(audio)
-    pass
+    audio = get_yt_audio(link)
+    return audio
 
 
 def get_something(link: str):
