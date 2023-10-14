@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.http import JsonResponse
 from pytube import YouTube
-import assmeblyai as asbi
+import assmeblyai as aai
+from secret import assemblyal_key, openai_key
+from openai import OpenAI
 import os
 
 
@@ -28,12 +30,15 @@ def get_yt_audio(link: str):
     return downl_file
 
 
-def get_yt_transcription(link: str):
+def get_yt_transcription(audio_path: str):
     """ The function that gets the transcription of the youtube
         link the user provided
     """
-    audio = get_yt_audio(link)
-    return audio
+    aai.settings.api_key = assemblyal_key
+    audio = get_yt_audio(audio_path)
+    transcriber = aai.Transcriber()
+    transcript = transcriber.transcribe(audio)
+    return transcript.text
 
 
 def get_something(link: str):
