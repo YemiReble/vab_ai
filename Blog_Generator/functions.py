@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import JsonResponse
 from pytube import YouTube
-import assmeblyai as aai
+import assemblyai as aai
 from secret import assemblyal_key, openai_key
 import openai
 import os
@@ -55,6 +55,6 @@ def generate_blog_from_openai(transcript: str):
         prompt=prompt,
         max_tokens=1000,
     )
-    
+
     blog_content = response.choices[0].text.strip()
     return blog_content
