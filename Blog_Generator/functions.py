@@ -14,7 +14,6 @@ def get_youtube_title(link: str):
     video = YouTube(link)
     title = video.title
     return title
-print(get_youtube_title('https://www.youtube.com/watch?v=fxDs4_1Ukg8'))
 
 
 def get_youtube_audio(link: str):
