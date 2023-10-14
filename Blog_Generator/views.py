@@ -5,7 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-# from functions import *
+from functions import (
+    get_youtube_audio, 
+    get_youtube_title,
+    get_youtube_transcription,
+    generate_blog_from_openai)
+
 
 # Create your views here.
 @login_required
@@ -80,12 +85,26 @@ def blog_content(request):
         try:
             data = json.load(request.body)
             youtubelink = data['link']
+            title = get_youtube_title(youtubelink)
+            transcript = get_youtube_transcription(youtubelink)
+
+            # Get Transcript
+            if not transcript:
+                message = 'Transcription could not be retrieved'
+                return JsonResponse({'error': message}, status=400)
+            
+            # Get Generated Blog Contents
+            blog_content = generate_blog_from_openai(transcript)
+            if not blog_content:
+                message = 'Unable to generate blog content'
+                return JsonResponse({'error': message}, status=400)
+                
+
             return JsonResponse({'content': youtubelink}, status=200)
-        
-            # title = get_youtube_title(youtubelink)
 
         except (json.JSONDecodeError, KeyError):
             message = 'Link not found or data could not be retireved'
             return JsonResponse({'error': message}, status=400)
+        
     else:
         return JsonResponse({'error': 'Invalid Request'}, status=405)
