@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-from functions import (
+from Blog_Generator.functions import (
     get_youtube_audio, 
     get_youtube_title,
     get_youtube_transcription,
