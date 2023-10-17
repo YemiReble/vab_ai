@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from pytube import YouTube
 import assemblyai as aai
 from secret import assemblyal_key, openai_key
+from bardapi import Bard
 import openai
 import os
 
@@ -58,3 +59,21 @@ def generate_blog_from_openai(transcript: str):
 
     blog_content = response.choices[0].text.strip()
     return blog_content
+
+
+def generate_blog_from_bard(transcript: str):
+    """ The function will utilise the Google Bard for free
+        to generate the blog content expected by the user's
+        operation
+    """
+    from secret import bard_key
+    try:
+        response = f"Base on the following transcript from a YouTube video, generate a\
+            comprehensive blog article using the following transcript and do not make it look like it is\
+                from a YouTube video:\n\n{transcript}\n\nArticle:"
+        token = bard_key
+        bard = Bard(token=token)
+        blog_content = bard.generate(response)['content']
+        return blog_content
+    except Exception as e:
+        return f'An Error Occored{e}' #JsonResponse({'error': 'Could not generate blog article'}, status=400)
