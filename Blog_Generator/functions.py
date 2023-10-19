@@ -3,7 +3,10 @@ from django.http import JsonResponse
 from pytube import YouTube
 import assemblyai as aai
 from secret import assemblyal_key, openai_key
-from bardapi import Bard
+from secret import token_sid, token_sidcc, token_sidts
+from bardapi import Bard, SESSION_HEADERS
+
+import requests
 import openai
 import os
 
@@ -42,8 +45,8 @@ def get_youtube_transcription(audio_path: str):
 
 
 def generate_blog_from_openai(transcript: str):
-    """ The function that handles the youtube title
-        operation
+    """ This function uses the OpenAI ChatGPT to generate the
+        Intended Blog Article
     """
     openai.api_key = openai_key
     
@@ -66,14 +69,32 @@ def generate_blog_from_bard(transcript: str):
         to generate the blog content expected by the user's
         operation
     """
-    from secret import bard_key
     try:
-        response = f"Base on the following transcript from a YouTube video, generate a\
+    	session = requests.Session()
+		token = token_sid
+		session.cookies.set("__Secure-1PSID", token_sid)
+		session.cookies.set("__Secure-1PSIDCC", token_sidcc)
+		session.cookies.set("__Secure-1PSIDTS", token_sidts)
+		session.headers = SESSION_HEADERS
+
+        prompt = f"Base on the following transcript from a YouTube video, generate a\
             comprehensive blog article using the following transcript and do not make it look like it is\
                 from a YouTube video:\n\n{transcript}\n\nArticle:"
-        token = bard_key
-        bard = Bard(token=token)
-        blog_content = bard.generate(response)['content']
+
+        bard = Bard(token=token, session=session)
+        blog_content = bard.generate(prompt)['content']
         return blog_content
     except Exception as e:
-        return f'An Error Occored{e}' #JsonResponse({'error': 'Could not generate blog article'}, status=400)
+        return f'An Error Occured{e}' #JsonResponse({'error': 'Could not generate blog article'}, status=400)
+
+
+# Bonous Function For User To Download The Auido File To their Computer
+def download_youtube_audio(request):
+    link = request.GET.get('link')
+    audio_file = get_youtube_audio(link)
+
+    with open(audio_file, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='audio/mpeg')
+        response['Content-Disposition'] = 'attachment; filename={}'.format(os.path.basename(audio_file))
+
+    return response
