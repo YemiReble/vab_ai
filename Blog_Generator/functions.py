@@ -49,11 +49,11 @@ def generate_blog_from_openai(transcript: str):
         Intended Blog Article
     """
     openai.api_key = openai_key
-    
+
     prompt = f'Base on the following transcript from a YouTube video, generate a\
         comprehensive blog article using the transcript and do not make it look like it is\
             from a YouTube video:\n\n{transcript}\n\nArticle:'
-    
+
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -70,12 +70,12 @@ def generate_blog_from_bard(transcript: str):
         operation
     """
     try:
-    	session = requests.Session()
-		token = token_sid
-		session.cookies.set("__Secure-1PSID", token_sid)
-		session.cookies.set("__Secure-1PSIDCC", token_sidcc)
-		session.cookies.set("__Secure-1PSIDTS", token_sidts)
-		session.headers = SESSION_HEADERS
+        session = requests.Session()
+        token = token_sid
+        session.cookies.set("__Secure-1PSID", token_sid)
+        session.cookies.set("__Secure-1PSIDCC", token_sidcc)
+        session.cookies.set("__Secure-1PSIDTS", token_sidts)
+        session.headers = SESSION_HEADERS
 
         prompt = f"Base on the following transcript from a YouTube video, generate a\
             comprehensive blog article using the following transcript and do not make it look like it is\
@@ -85,11 +85,14 @@ def generate_blog_from_bard(transcript: str):
         blog_content = bard.generate(prompt)['content']
         return blog_content
     except Exception as e:
-        return f'An Error Occured{e}' #JsonResponse({'error': 'Could not generate blog article'}, status=400)
+        return f'An Error Occured{e}'  # JsonResponse({'error': 'Could not generate blog article'}, status=400)
 
 
-# Bonous Function For User To Download The Auido File To their Computer
 def download_youtube_audio(request):
+    """ Bonous Function For User To Download The
+        Auido File To their Computer
+    """
+
     link = request.GET.get('link')
     audio_file = get_youtube_audio(link)
 

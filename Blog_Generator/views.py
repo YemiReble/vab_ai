@@ -9,7 +9,8 @@ from Blog_Generator.functions import (
     get_youtube_audio, 
     get_youtube_title,
     get_youtube_transcription,
-    generate_blog_from_openai)
+    generate_blog_from_openai,
+    generate_blog_from_bard)
 
 
 # Create your views here.
@@ -83,7 +84,7 @@ def blog_content(request):
     """
     if request.method == 'POST':
         try:
-            data = json.load(request.body)
+            data = json.loads(request.body)
             youtubelink = data['link']
             title = get_youtube_title(youtubelink)
             
@@ -100,7 +101,8 @@ def blog_content(request):
                 return JsonResponse({'error': message}, status=400)
                 
 
-            return JsonResponse({'content': youtubelink}, status=200)
+            return JsonResponse({'content': blog_content,
+                    'title': title, 'link': youtubelink}, status=200)
 
         except (json.JSONDecodeError, KeyError):
             message = 'Link not found or data could not be retireved'
