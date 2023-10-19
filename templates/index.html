@@ -8,8 +8,51 @@
     <!-- Latest Tailwind CSS Library -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/tailwind.min.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{url 'static/css/style.css'}">
-    <style></style>
+    <!-- {% load static %} -->
+    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/style.css' %}"> -->
+    <style>
+	@keyframes rotate {
+    		from {
+        		transform: rotate(0deg);
+    		}
+   		to { 
+        		transform: rotate(360deg);
+    		}
+	}
+ 
+	@-webkit-keyframes rotate {
+    		from {
+        		-webkit-transform: rotate(0deg);
+    		}
+    		to { 
+        		-webkit-transform: rotate(360deg);
+    		}
+	}
+
+	.load {
+    	width: 100px;
+    	height: 100px;
+    	margin: 110px auto 0;
+    	border:solid 10px #1539d8;
+    	border-radius: 50%;
+    	border-right-color: transparent;
+    	border-bottom-color: transparent;
+     	-webkit-transition: all 0.5s ease-in;
+    	-webkit-animation-name:             rotate; 
+    	-webkit-animation-duration:         1.0s; 
+    	-webkit-animation-iteration-count:  infinite;
+    	-webkit-animation-timing-function: linear;
+        
+        transition: all 0.5s ease-in;
+    	animation-name:             rotate; 
+    	animation-duration:         1.0s; 
+   	animation-iteration-count:  infinite;
+   	animation-timing-function: linear; 
+	}
+
+	/* End of Loading Button */
+	
+    </style>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-200 font-sans antialiased">
     <!-- Navigation Bar area -->
@@ -69,7 +112,7 @@
         document.getElementById('generateBlogButton').addEventListener('click', async () => {
             
 
-            const youtubeLink = document.getElementById('youtubeLink').value;
+            const youtubeLink = document.getElementById('youtubelink').value;
             const blogContent = document.getElementById('blogContent');
             
             if(youtubeLink) {
@@ -77,7 +120,7 @@
                 
                 blogContent.innerHTML = ''; // Clear previous content
 
-                const endpointUrl = '/blogcontent' //'/generate-blog';
+                const endpointUrl = '/blogcontent/' //'/generate-blog';
                 
                 try {
                     const response = await fetch(endpointUrl, {
