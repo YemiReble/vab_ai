@@ -25,7 +25,7 @@
             <section>
                 <h2 class="text-xl mb-4 font-semibold">Saved Blog Posts</h2>
                 <div class="space-y-4">
-                    <!-- {% if error_message %} Use this to instruct user that they dont have an blog post generated yet -->
+                    <!-- Use message error variable in this section to instruct user that they dont have an blog post generated yet if no blog is available -->
                     <!-- [Reversed] is used to display the looped indices from the max index to the 0th index [5 - 0] instead of 0 - 5 -->
                     <!-- This is done to make the loop show the lated blog posts -->
                     {% for article in user_blog reversed %}
