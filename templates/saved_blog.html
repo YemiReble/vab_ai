@@ -25,10 +25,15 @@
             <section>
                 <h2 class="text-xl mb-4 font-semibold">Saved Blog Posts</h2>
                 <div class="space-y-4">
+                    <!-- {% if error_message %} Use this to instruct user that they dont have an blog post generated yet -->
+                    <!-- [Reversed] is used to display the looped indices from the max index to the 0th index [5 - 0] instead of 0 - 5 -->
+                    <!-- This is done to make the loop show the lated blog posts -->
+                    {% for article in user_blog reversed %}
                     <div class="border border-gray-300 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold">Blog Post Title 1 '(Temporary)'</h3>
-                        <p>This will be the content of the blog post</p>
+                        <h3 class="text-lg font-semibold">{{article.youtube_title}}</h3>
+                        <p>{{article.content|truncatechars:100}}</p>
                     </div>
+                    {% endfor %}
                     <div class="border border-gray-300 p-4 rounded-lg">
                         <h3 class="text-lg font-semibold">Blog Post Title 2 '(Temporary)'</h3>
                         <p>This will be the content of the blog post</p>
