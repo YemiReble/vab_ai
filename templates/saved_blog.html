@@ -20,7 +20,7 @@
     </nav>
 
     <!-- Container For Blog Posts -->
-    <div class="container mx-auto mt-10 px4 sm:px-0 h-screen">
+    <div class="flex-grow container mx-auto mt-10 px4 sm:px-0">
         <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
             <!-- Blog Post Section -->
             <section>
@@ -31,16 +31,12 @@
                     <!-- This is done to make the loop show the lated blog posts -->
                     {% for article in user_blog reversed %}
                     <a href="/blog_content/{{article.id}}">
-                        <div class="border border-gray-300 p-4 rounded-lg">
+                        <div class="border border-gray-300 p-4 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
                             <h3 class="text-lg font-semibold">{{article.youtube_title}}</h3>
                             <p>{{article.content|truncatechars:100}}</p>
                         </div>
                     </a>
                     {% endfor %}
-                    <div class="border border-gray-300 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold">Blog Post Title 2 '(Temporary)'</h3>
-                        <p>This will be the content of the blog post</p>
-                    </div>
                 </div>
                 <!-- The Rest of the blog posts -->
             </section>
