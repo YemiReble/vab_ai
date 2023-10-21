@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('savedblog/', views.saved_blog, name='saved_blog'),
     path('blogcontent/', views.blog_content, name='blog_content'),
+    path('blogposts/<int:pg>', views.blog_posts, name='blog_posts'),
 ]

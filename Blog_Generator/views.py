@@ -4,13 +4,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .models import Blog
 import json
 from Blog_Generator.functions import (
     get_youtube_audio, 
     get_youtube_title,
     get_youtube_transcription,
     generate_blog_from_openai,
-    generate_blog_from_bard)
+    generate_blog_from_bard,
+    generate_blog_from_cohere)
 
 
 # Create your views here.
@@ -71,11 +73,29 @@ def user_logout(request):
     logout(request)
     return redirect('/')
 
+
+@login_required
 def saved_blog(request):
     """ The function that handles the saved blog
         operation
     """
-    return render(request, 'saved_blog.html')
+    user_blog = Blog.objects.filter(user=request.user)
+    if not user_blog:
+        # To be Implimented later in the ftml file
+        return render(request, 'saved_blog.html', {'error_message': 'No Blog Found'})
+
+    return render(request, 'saved_blog.html', {'user_blog': user_blog})
+
+
+def blog_posts(request, pg):
+    """ The function that handles the user blog post
+    """
+    user_blog = Blog.objects.get(id=pg)
+    if request.user == user_blog.user:
+        return render(request, 'blog_content.html', {'user_blog': user_blog})
+    else:
+        return redirect('/')
+
 
 @csrf_exempt
 def blog_content(request):
@@ -87,19 +107,31 @@ def blog_content(request):
             data = json.loads(request.body)
             youtubelink = data['link']
             title = get_youtube_title(youtubelink)
-            
+
             # Get Transcript
             transcript = get_youtube_transcription(youtubelink)
             if not transcript:
                 message = 'Transcription could not be retrieved'
                 return JsonResponse({'error': message}, status=400)
-            
+
             # Get Generated Blog Contents From Bard
-            blog_content = generate_blog_from_bard(transcript)
+            blog_content = generate_blog_from_cohere(transcript)
             if not blog_content:
                 message = 'Unable to generate blog content'
                 return JsonResponse({'error': message}, status=400)
-                
+
+            if len(blog_content) < 40:
+                return JsonResponse({'content': blog_content}, status=400)
+
+            else:
+                # Save Blog Post
+                user_generated_content = Blog(
+                        user = request.user,
+                        youtube_title = title,
+                        youtube_link = youtubelink,
+                        content = blog_content
+                        )
+                user_generated_content.save()
 
             return JsonResponse({'content': blog_content,
                     'title': title, 'link': youtubelink}, status=200)

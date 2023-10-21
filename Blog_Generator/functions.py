@@ -2,11 +2,13 @@ from django.conf import settings
 from django.http import JsonResponse
 from pytube import YouTube
 import assemblyai as aai
-from secret import assemblyal_key, openai_key
+from secret import assemblyal_key, openai_key, cohere_api_key
 from secret import token_sid, token_sidcc, token_sidts
 from bardapi import Bard, SESSION_HEADERS
 
 import requests
+import cohere
+import json
 import openai
 import os
 
@@ -44,24 +46,52 @@ def get_youtube_transcription(audio_path: str):
     return transcript.text
 
 
+def generate_blog_from_cohere(transcript: str):
+    """ This function uses the Cohere AI to generate
+        the required blog post form the user
+    """
+    try:
+        co = cohere.Client(cohere_api_key)
+        prompt=f'You are a professional writer. Base on the following transcript from a YouTube video, generate a\
+                comprehensive blog article using the following transcript and do not make it look like it is\
+                    from a YouTube video:\n\n{transcript}\n\nArticle:'
+
+        response = co.generate(
+            model='command',
+            prompt=prompt,
+            max_tokens=2500,
+            temperature=0.9,
+            k=0,
+            stop_sequences=[],
+            return_likelihoods='NONE'
+        )
+        return response.generations[0].text
+    except Exception:
+        return 'Unable to generate blog content'
+
+
 def generate_blog_from_openai(transcript: str):
     """ This function uses the OpenAI ChatGPT to generate the
         Intended Blog Article
     """
-    openai.api_key = openai_key
+    try:
+        openai.api_key = openai_key
 
-    prompt = f'Base on the following transcript from a YouTube video, generate a\
-        comprehensive blog article using the transcript and do not make it look like it is\
-            from a YouTube video:\n\n{transcript}\n\nArticle:'
+        prompt = f"Base on the following transcript from a YouTube video, generate a\
+            comprehensive blog article using the following transcript and do not make it look like it is\
+                from a YouTube video:\n\n{transcript}\n\nArticle:"
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000,
-    )
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=prompt,
+            max_tokens=1000,
+        )
 
-    blog_content = response.choices[0].text.strip()
-    return blog_content
+        blog_content = response.choices[0].text.strip()
+        return blog_content
+
+    except Exception as e:
+        return f'Unable to generate blog content: {e}'
 
 
 def generate_blog_from_bard(transcript: str):
@@ -84,8 +114,8 @@ def generate_blog_from_bard(transcript: str):
         bard = Bard(token=token, session=session)
         blog_content = bard.generate(prompt)['content']
         return blog_content
-    except Exception as e:
-        return f'An Error Occured{e}'  # JsonResponse({'error': 'Could not generate blog article'}, status=400)
+    except Exception:
+        return 'Unable to generate blog content'
 
 
 def download_youtube_audio(request):
