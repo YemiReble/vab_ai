@@ -24,14 +24,16 @@
             
             <section>
                 <h2 class="text-xl mb-4 font-semibold">Blog Post Details</h2>
+                {% for article in user_blog %}
                 <div class="border border-gray-300 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold">Blog Post Title</h3>
-                    <p class="text-gray-700">This is the full content of this blog post, enjoy</p>
+                    <h3 class="text-lg font-semibold">{{article.title}}</h3>
+                    <p class="text-gray-700">{{article.content}}</p>
                     <hr class="my-4 border-gray-300">
                     <h4 class="text-lg font-semibold">Youtube Title</h4>
                     <p class="text-gray-700">The Title of the Youtube Video</p>
                     <h4 class="text-lg font-semibold mt-4">YouTube Link</h4>
                     <a href="" class="text-blue-600 hover:underline">https://www.youtube.com</a>
+                    {% endfor %}
                 </div>
             </section>
         </div>
