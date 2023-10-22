@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from .models import Blog
 import json
@@ -114,8 +115,9 @@ def blog_content(request):
                 message = 'Transcription could not be retrieved'
                 return JsonResponse({'error': message}, status=400)
 
-            # Get Generated Blog Contents From Bard
-            blog_content = generate_blog_from_cohere(transcript)
+            # Get Generated Blog Contents From CohereAI
+            gen_content = generate_blog_from_cohere(transcript)
+            blog_content = mark_safe(gen_content)
             if not blog_content:
                 message = 'Unable to generate blog content'
                 return JsonResponse({'error': message}, status=400)
