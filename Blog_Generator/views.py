@@ -75,6 +75,14 @@ def user_logout(request):
     return redirect('/')
 
 
+def session_logout_user(request):
+    """ The function that handles the user logout
+        operation
+    """
+    request.session.flush()
+    return redirect('/')
+
+
 @login_required
 def saved_blog(request):
     """ The function that handles the saved blog
