@@ -13,6 +13,17 @@ import openai
 import os
 
 
+def is_password_up_to_standard(password):
+    # Implement your checks here
+    if len(password) < 8:
+        return False
+    if not any(char.isdigit() for char in password):
+        return False
+    if not any(char.isalpha() for char in password):
+        return False
+    return True
+
+
 def get_youtube_title(link: str):
     """ The function that handles the youtube title
         operation
@@ -52,9 +63,11 @@ def generate_blog_from_cohere(transcript: str):
     """
     try:
         co = cohere.Client(cohere_api_key)
-        prompt=f'You are a professional writer. Base on the following transcript from a YouTube video, generate a\
-                comprehensive blog article using the following transcript and do not make it look like it is\
-                    from a YouTube video:\n\n{transcript}\n\nArticle:'
+        prompt = f'You are a professional writer. Base on the following \
+                transcript from a YouTube video, generate a comprehensive \
+                blog article using the following transcript and do not \
+                make it look like it is from a \
+                YouTube video:\n\n{transcript}\n\nArticle:'
 
         response = co.generate(
             model='command',
@@ -77,9 +90,11 @@ def generate_blog_from_openai(transcript: str):
     try:
         openai.api_key = openai_key
 
-        prompt = f"Base on the following transcript from a YouTube video, generate a\
-            comprehensive blog article using the following transcript and do not make it look like it is\
-                from a YouTube video:\n\n{transcript}\n\nArticle:"
+        prompt = f'You are a professional writer. Base on the following \
+                transcript from a YouTube video, generate a comprehensive \
+                blog article using the following transcript and do not \
+                make it look like it is from a \
+                YouTube video:\n\n{transcript}\n\nArticle:'
 
         response = openai.Completion.create(
             model="text-davinci-003",
@@ -107,9 +122,11 @@ def generate_blog_from_bard(transcript: str):
         session.cookies.set("__Secure-1PSIDTS", token_sidts)
         session.headers = SESSION_HEADERS
 
-        prompt = f"Base on the following transcript from a YouTube video, generate a\
-            comprehensive blog article using the following transcript and do not make it look like it is\
-                from a YouTube video:\n\n{transcript}\n\nArticle:"
+        prompt = f'You are a professional writer. Base on the following \
+                transcript from a YouTube video, generate a comprehensive \
+                blog article using the following transcript and do not \
+                make it look like it is from a \
+                YouTube video:\n\n{transcript}\n\nArticle:'
 
         bard = Bard(token=token, session=session)
         blog_content = bard.generate(prompt)['content']
@@ -128,6 +145,7 @@ def download_youtube_audio(request):
 
     with open(audio_file, 'rb') as f:
         response = HttpResponse(f.read(), content_type='audio/mpeg')
-        response['Content-Disposition'] = 'attachment; filename={}'.format(os.path.basename(audio_file))
+        response['Content-Disposition'] = 'attachment; filename={}'
+        format(os.path.basename(audio_file))
 
     return response
