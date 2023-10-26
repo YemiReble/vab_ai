@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from .models import Blog
 import json
 from Blog_Generator.functions import (
+    email_check,
     get_youtube_audio,
     get_youtube_title,
     get_youtube_transcription,
@@ -51,6 +52,11 @@ def user_signup(request):
         password = request.POST['password']
         repeat_password = request.POST['repeatpassword']
 
+        # If email is valid
+        if not email_check(email):
+            return render(request, 'signup.html',
+                          {'error_message': 'Empty or invalid email'})
+
         # Check if user already exists
         if User.objects.filter(username=username).exists():
             return render(request, 'signup.html',
@@ -63,8 +69,8 @@ def user_signup(request):
 
         # Check if password is up to standard
         if not is_password_up_to_standard(password):
-            message = 'Please use a stronger password.\
-                    Use at least one capital character, numbers and symbols'
+            message = 'Please use a stronger password.\nUse at \
+                    least one capital character, numbers and symbols'
             return render(request, 'signup.html',
                           {'error_message': message})
 
