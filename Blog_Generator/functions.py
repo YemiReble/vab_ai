@@ -13,14 +13,31 @@ import openai
 import os
 
 
-def is_password_up_to_standard(password):
-    # Implement your checks here
+def is_password_up_to_standard(password: str) -> bool:
+    """ Implement your checks here
+    """
     if len(password) < 8:
         return False
     if not any(char.isdigit() for char in password):
         return False
     if not any(char.isalpha() for char in password):
         return False
+    return True
+
+
+def email_check(email: str) -> bool:
+    """ Check email standard
+    """
+    if email is None:
+        return False
+    if '@' and '.com' not in email:
+        return False
+    
+    # Acceptable email provider
+    # mails = {'gmail.com', 'yahoo.com', 'hotmail.com', 'outmail.com'}
+    # for m in mails:
+    #    pass
+
     return True
 
 
