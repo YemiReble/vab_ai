@@ -31,7 +31,7 @@
                     <!-- [Reversed] is used to display the looped indices from the max index to the 0th index [5 - 0] instead of 0 - 5 -->
                     <!-- This is done to make the loop show the lated blog posts -->
                     {% for article in user_blog reversed %}
-                    <a href="/blogposts/{{article.id}}">
+		    <a href="/blogposts/{{article.id}}">
                         <div class="border border-gray-300 p-4 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
                             <h3 class="text-lg font-semibold">{{article.youtube_title}}</h3>
                             <p>{{article.content|truncatechars:100}}</p>
