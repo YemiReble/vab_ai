@@ -13,7 +13,8 @@ from Blog_Generator.functions import (
     get_youtube_title,
     get_youtube_transcription,
     generate_blog_from_cohere,
-    is_password_up_to_standard)
+    is_password_up_to_standard,
+    content_formatter)
 
 
 # Create your views here.
@@ -115,7 +116,6 @@ def saved_blog(request):
     """
     user_blog = Blog.objects.filter(user=request.user)
     if not user_blog:
-        # To be Implimented later in the ftml file
         return render(request, 'saved_blog.html',
                       {'error_message': 'No Blog Found'})
 
@@ -172,12 +172,13 @@ def blog_content(request):
 
             else:
                 # If everything goes well save Blog Post
+                blog_content = content_formatter(blog_content)
                 user_generated_content = Blog(
-                        user=request.user,
-                        youtube_title=title,
-                        youtube_link=youtubelink,
-                        content=blog_content
-                        )
+                    user=request.user,
+                    youtube_title=title,
+                    youtube_link=youtubelink,
+                    content=blog_content
+                )
                 user_generated_content.save()
 
             return JsonResponse({'content': blog_content}, status=200)
