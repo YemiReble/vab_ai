@@ -32,16 +32,36 @@ def email_check(email: str) -> bool:
         return False
     if '@' and '.com' not in email:
         return False
-    
+
     # Acceptable email provider
     # mails = {'gmail.com', 'yahoo.com', 'hotmail.com', 'outmail.com'}
     # for m in mails:
-    #    pass
+    #    if m not in email:
+    #        return False
 
     return True
 
 
-def get_youtube_title(link: str):
+def content_formatter(content: str) -> str:
+    """ This fucntion makes sure that the
+        content generate from the results
+        of transcribing to blog post is well
+        formatted in a readable format
+    """
+    # Split the text into paragraphs based on double line breaks
+    paragraph = [para.strip()
+                 for para in content.split('\n\n') if para.strip()]
+
+    # Generate HTML content with <p> tags for each paragraph
+    html_content = '<div class="max-w-2xl">'
+    for para in paragraph:
+        html_content += f'<p class="mb-4">{para}</p>'
+    html_content += '</div>'
+
+    return html_content
+
+
+def get_youtube_title(link: str) -> str:
     """ The function that handles the youtube title
         operation
     """
